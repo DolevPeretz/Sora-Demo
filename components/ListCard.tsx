@@ -5,8 +5,12 @@ import { useGenerateImage } from "@/hooks/useGenerateImage";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { preloadImages, ImageData } from "@/utils/preloadImages";
+import ButtonSize from "./ButtonSize";
 
 function ListCard() {
+  const [aspect, setAspect] = useState<
+    "aspect-square" | "aspect-video" | "aspect-[9/16]"
+  >("aspect-square");
   const { query } = useQueryContext();
   const prompt = query;
 
@@ -72,9 +76,11 @@ function ListCard() {
 
   return (
     <div className="p-4">
+      <ButtonSize aspect={aspect} onChange={setAspect} />
+
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {images.map((img: ImageData, index: number) => (
-          <Card img={img} key={index} />
+          <Card img={img} key={index} aspect={aspect} />
         ))}
       </div>
 
