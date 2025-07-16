@@ -1,18 +1,29 @@
+"use client";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImageData } from "@/utils/preloadImages";
 
 function Card({
   img,
   aspect,
+  index,
 }: {
   img: ImageData;
   aspect: "aspect-square" | "aspect-video" | "aspect-[9/16]";
+  index: number;
 }) {
+  const router = useRouter();
   const isVideo = img.content_type?.startsWith("video");
+
+  const handleClick = () => {
+    router.push(`/image/${index}`);
+    sessionStorage.setItem("selectedImage", JSON.stringify(img)); // שמירה זמנית
+  };
 
   return (
     <div
-      className={`bg-white/10 rounded-xl overflow-hidden border border-white/10 ${aspect}`}
+      className={`cursor-pointer ${aspect} bg-white/10 rounded-xl overflow-hidden border border-white/10`}
+      onClick={handleClick}
     >
       {isVideo ? (
         <video

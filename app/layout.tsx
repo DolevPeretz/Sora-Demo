@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import ClientSideScrollRestorer from "@/src/ClientSideScrollRestorer";
 
 export const metadata: Metadata = {
   title: "Api App Image",
@@ -16,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <ClientSideScrollRestorer />
+        </Providers>
       </body>
     </html>
   );

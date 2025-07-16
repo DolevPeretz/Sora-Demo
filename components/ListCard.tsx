@@ -24,7 +24,7 @@ function ListCard() {
   } = useGenerateImage(prompt);
 
   const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
-  const { ref, inView } = useInView({ threshold: 1 });
+  const { ref, inView, entry } = useInView({ threshold: [0.5, 1.0] });
   const hasPrefetched = useRef(false);
 
   // Preload images when data is ready
@@ -42,12 +42,16 @@ function ListCard() {
     }
   }, [data, loadedPages, status]);
 
-  // Load more when in view
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (
+      entry &&
+      entry.intersectionRatio >= 0.5 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage]);
+  }, [entry, hasNextPage, isFetchingNextPage]);
 
   // Prefetch next page once initial load succeeds
   useEffect(() => {
@@ -80,7 +84,7 @@ function ListCard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {images.map((img: ImageData, index: number) => (
-          <Card img={img} key={index} aspect={aspect} />
+          <Card img={img} key={index} aspect={aspect} index={index} />
         ))}
       </div>
 
