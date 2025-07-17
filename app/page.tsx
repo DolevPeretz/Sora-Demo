@@ -4,6 +4,8 @@ import TopNavbar from "@/components/TopNavebar";
 import SideNavebar from "@/components/SideNavebar";
 import SearchBar from "@/components/SearchBar";
 import { headers } from "next/headers";
+import { Suspense } from "react";
+import Spinner from "@/components/Spinner";
 
 export default async function HomePage({
   searchParams,
@@ -28,7 +30,9 @@ export default async function HomePage({
             initialImages={initialImages}
           />
         </main>
-        <SearchBar />
+        <Suspense fallback={<Spinner />}>
+          <SearchBar />
+        </Suspense>
       </div>
     </>
   );
