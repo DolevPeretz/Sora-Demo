@@ -5,14 +5,25 @@ import { useInView } from "react-intersection-observer";
 import ButtonSize from "./ButtonSize";
 import ImageGrid from "./ImageGrid";
 import { ImageData } from "@/utils/preloadImages";
+import { preloadImagesAsync } from "@/utils/preloadImages";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 type Props = {
   prompt: string;
   initialImages: ImageData[];
 };
 
+function preloadImages(urls: string[]) {
+  urls.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
 function ListCard({ prompt, initialImages }: Props) {
-  const [localPrompt, setLocalPrompt] = useState(prompt);
+  useScrollRestoration();
+  const [loadingImages, setLoadingImages] = useState(true);
+
   const [aspect, setAspect] = useState<
     "aspect-square" | "aspect-video" | "aspect-[9/16]"
   >("aspect-square");
@@ -20,9 +31,12 @@ function ListCard({ prompt, initialImages }: Props) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useGenerateImage(prompt);
 
-  useEffect(() => {
-    setLocalPrompt(prompt);
-  }, [prompt]);
+  // useEffect(() => {
+  //   const urls = initialImages.map((i) => i.url);
+  //   preloadImagesAsync(urls)
+  //     .then(() => setLoadingImages(false))
+  //     .catch(() => setLoadingImages(false));
+  // }, [initialImages]);
 
   const { ref, inView } = useInView({ threshold: 0.1 });
 

@@ -9,8 +9,6 @@ function TopNavbar() {
         <Image src={chatgpt} alt="Logo" className="w-6 h-6" />
       </div>
 
-      {/* <h1 className="text-lg text-left font-semibold ">Explore</h1> */}
-
       <div className="flex items-center gap-4">
         <FaFilter className="text-xl hover:text-emerald-400 cursor-pointer" />
         <FaBell className="text-xl hover:text-emerald-400 cursor-pointer" />

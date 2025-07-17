@@ -12,7 +12,6 @@ function SideNavebar() {
         </kbd>
       </button>
 
-      {/* קבוצה ראשונה */}
       <div className="flex flex-col gap-1">
         {links.map(({ id, href, text, icon }) => (
           <a

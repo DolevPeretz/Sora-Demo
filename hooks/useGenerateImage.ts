@@ -1,4 +1,5 @@
 "use client";
+import { ImageData } from "@/utils/preloadImages";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export function useGenerateImage(prompt: string) {

@@ -9,12 +9,10 @@ export default function SearchBar() {
   const initial = searchParams.get("prompt") || "";
   const [inputValue, setInputValue] = useState(initial);
 
-  // סנכרון עם URL במקרה של חזרה/ניווט חיצוני
   useEffect(() => {
     setInputValue(searchParams.get("prompt") || "");
   }, [searchParams.get("prompt")]);
 
-  // debounce של 500ms
   useEffect(() => {
     const handler = setTimeout(() => {
       const trimmed = inputValue.trim();
