@@ -25,7 +25,7 @@ function SearchBar() {
   };
 
   return (
-    <div className="fixed bottom-4 left-5 right-4 mx-auto w-[60%] max-w-5xl bg-white/15 text-white p-4 rounded-2xl flex flex-col gap-3 shadow-lg backdrop-blur-md z-50">
+    <div className="fixed bottom-4 left-70 right-4 mx-auto w-[60%] max-w-5xl bg-white/15 text-white p-4 rounded-2xl flex flex-col gap-3 shadow-lg backdrop-blur-md z-50">
       <div className="flex items-center gap-2 px-4 py-2 rounded-full w-full">
         <FaPlus />
         <input

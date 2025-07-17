@@ -18,3 +18,19 @@ export function preloadImages(imageList: ImageData[]): Promise<void> {
     });
   });
 }
+
+// export const preloadImages = (urls: string[]): Promise<void> => {
+//   return new Promise((resolve) => {
+//     let loaded = 0;
+//     urls.forEach((url) => {
+//       const img = new Image();
+//       img.src = url;
+//       img.onload = img.onerror = () => {
+//         loaded++;
+//         if (loaded === urls.length) {
+//           resolve();
+//         }
+//       };
+//     });
+//   });
+// };

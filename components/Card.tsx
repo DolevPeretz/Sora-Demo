@@ -1,17 +1,17 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImageData } from "@/utils/preloadImages";
+import React from "react";
 
-function Card({
-  img,
-  aspect,
-  index,
-}: {
+type CardProps = {
   img: ImageData;
   aspect: "aspect-square" | "aspect-video" | "aspect-[9/16]";
   index: number;
-}) {
+};
+
+const CardComponent = ({ img, aspect, index }: CardProps) => {
   const router = useRouter();
   const isVideo = img.content_type?.startsWith("video");
 
@@ -22,7 +22,7 @@ function Card({
 
   return (
     <div
-      className={`cursor-pointer ${aspect} bg-white/10 rounded-xl overflow-hidden border border-white/10`}
+      className={`cursor-pointer ${aspect}  overflow-hidden rounded-xl`}
       onClick={handleClick}
     >
       {isVideo ? (
@@ -47,6 +47,8 @@ function Card({
       )}
     </div>
   );
-}
+};
+
+const Card = React.memo(CardComponent);
 
 export default Card;

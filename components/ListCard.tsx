@@ -1,92 +1,58 @@
 "use client";
 import { useQueryContext } from "@/context/QueryContext";
-import Card from "./Card";
 import { useGenerateImage } from "@/hooks/useGenerateImage";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
-import { preloadImages, ImageData } from "@/utils/preloadImages";
 import ButtonSize from "./ButtonSize";
+import ImageGrid from "./ImageGrid";
 
 function ListCard() {
   const [aspect, setAspect] = useState<
     "aspect-square" | "aspect-video" | "aspect-[9/16]"
   >("aspect-square");
+
   const { query } = useQueryContext();
   const prompt = query;
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-    isSuccess,
-  } = useGenerateImage(prompt);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+    useGenerateImage(prompt);
 
-  const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
-  const { ref, inView, entry } = useInView({ threshold: [0.5, 1.0] });
-  const hasPrefetched = useRef(false);
+  const { ref, inView } = useInView({ threshold: 0.1 });
 
-  // Preload images when data is ready
-  useEffect(() => {
-    if (status === "success") {
-      const allPages = data?.pages || [];
-
-      allPages.forEach((page, index) => {
-        if (!loadedPages.has(index) && page?.length > 0) {
-          preloadImages(page).then(() => {
-            setLoadedPages((prev) => new Set(prev).add(index));
-          });
-        }
-      });
-    }
-  }, [data, loadedPages, status]);
+  // useEffect(() => {
+  //   if (data && data.pages.length > 0) {
+  //     const firstPageImages = data.pages[0]; // קבלת התמונה הראשונה מהדף הראשון
+  //     if (firstPageImages && firstPageImages.length > 0) {
+  //       const img = new Image();
+  //       img.src = firstPageImages[0]?.url; // נטען את התמונה הראשונה מראש
+  //     }
+  //   }
+  // }, [data]);
 
   useEffect(() => {
-    if (
-      entry &&
-      entry.intersectionRatio >= 0.5 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
+    if (inView && hasNextPage && !isFetchingNextPage && status === "success") {
       fetchNextPage();
     }
-  }, [entry, hasNextPage, isFetchingNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage, status]);
 
-  // Prefetch next page once initial load succeeds
-  useEffect(() => {
-    if (isSuccess && hasNextPage && !hasPrefetched.current) {
-      hasPrefetched.current = true;
-      fetchNextPage();
-    }
-  }, [isSuccess, hasNextPage]);
+  const images = data?.pages.flat() || [];
 
-  // Loading spinner before anything loaded
-  if (status === "pending" || loadedPages.size === 0)
+  if (status === "pending") {
     return (
       <div className="h-screen w-full flex items-center justify-center text-white">
         <div className="h-6 w-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
+  }
 
-  if (status === "error")
+  if (status === "error") {
     return <div className="text-red-500">Error loading images</div>;
-
-  // Gather all images from loaded pages
-  const images =
-    data?.pages
-      .map((page, index) => (loadedPages.has(index) ? page : []))
-      .flat() || [];
+  }
 
   return (
     <div className="p-4">
       <ButtonSize aspect={aspect} onChange={setAspect} />
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-        {images.map((img: ImageData, index: number) => (
-          <Card img={img} key={index} aspect={aspect} index={index} />
-        ))}
-      </div>
+      <ImageGrid images={images} aspect={aspect} />
 
       {hasNextPage && (
         <div ref={ref} className="text-center text-white mt-4">
@@ -95,7 +61,7 @@ function ListCard() {
               <div className="h-6 w-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
-            "Scroll down to load more"
+            "Scroll to load more"
           )}
         </div>
       )}

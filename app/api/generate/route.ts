@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         prompt: `${prompt} page ${page}`,
-        num_images: 4,
+        num_images: 3,
       }),
     });
 

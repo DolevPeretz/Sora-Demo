@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { preloadImages } from "@/utils/preloadImages";
 
 export function useGenerateImage(prompt: string) {
   return useInfiniteQuery({
@@ -9,22 +10,19 @@ export function useGenerateImage(prompt: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, page: pageParam }),
       });
-      console.log("🔁 Got response:", response.status);
 
-      const text = await response.text(); // קודם תקראי כטקסט
-      console.log("📦 Raw text:", text);
-
-      const data = JSON.parse(text); // כאן תנסי לפענח
-
-      console.log("✅ Parsed JSON:", data);
+      const text = await response.text();
+      const data = JSON.parse(text);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API call failed:", errorText);
+        console.error("API call failed:", text);
         throw new Error("Failed to generate image");
       }
-      // const data = await response.json();
-      // console.log("DOLEV ", data);
+
+      // כאן נטען את כל התמונות לפני שמחזירים את הנתונים
+      // const urls = data.images.map((img: any) => img.url);
+      // await preloadImages(urls);
+
       return data;
     },
     initialPageParam: 1,
