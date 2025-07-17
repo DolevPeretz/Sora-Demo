@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -16,8 +17,9 @@ const CardComponent = ({ img, aspect, index }: CardProps) => {
   const isVideo = img.content_type?.startsWith("video");
 
   const handleClick = () => {
+    sessionStorage.setItem("scrollY", window.scrollY.toString());
+    sessionStorage.setItem("selectedImage", JSON.stringify(img));
     router.push(`/image/${index}`);
-    sessionStorage.setItem("selectedImage", JSON.stringify(img)); // שמירה זמנית
   };
 
   return (

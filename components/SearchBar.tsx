@@ -1,28 +1,38 @@
 "use client";
-import {
-  FaImage,
-  FaPlus,
-  FaQuestion,
-  FaTrashAlt,
-  FaArrowUp,
-} from "react-icons/fa";
-import { useState } from "react";
-import { useQueryContext } from "@/context/QueryContext";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { FaPlus, FaArrowUp } from "react-icons/fa";
 
-function SearchBar() {
-  const { setQuery } = useQueryContext();
-  const [inputValue, setInputValue] = useState("");
+export default function SearchBar() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const initial = searchParams.get("prompt") || "";
+  const [inputValue, setInputValue] = useState(initial);
 
-  const handleSearch = () => {
-    if (inputValue.trim() === "") return;
-    setQuery(inputValue.trim());
-  };
+  // סנכרון עם URL במקרה של חזרה/ניווט חיצוני
+  useEffect(() => {
+    setInputValue(searchParams.get("prompt") || "");
+  }, [searchParams.get("prompt")]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
+  // debounce של 500ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmed = inputValue.trim();
+      const current = searchParams.get("prompt") || "";
+
+      if (trimmed !== current) {
+        const params = new URLSearchParams(searchParams);
+
+        if (trimmed) params.set("prompt", trimmed);
+        else params.delete("prompt");
+
+        const qs = params.toString();
+        router.replace(`/` + (qs ? `?${qs}` : ""));
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [inputValue, searchParams, router]);
 
   return (
     <div className="fixed bottom-4 left-70 right-4 mx-auto w-[60%] max-w-5xl bg-white/15 text-white p-4 rounded-2xl flex flex-col gap-3 shadow-lg backdrop-blur-md z-50">
@@ -33,33 +43,17 @@ function SearchBar() {
           placeholder="Describe your image..."
           className="bg-transparent outline-none w-full text-white placeholder-white"
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
           value={inputValue}
         />
       </div>
-
       <div className="flex flex-wrap gap-2">
-        <button className="bg-[#ffffff1a] px-4 py-2 rounded-full flex items-center gap-2 text-sm">
-          <FaImage />
-          Image
-        </button>
-        <button className="bg-[#ffffff1a] px-4 py-2 rounded-full text-sm">
-          2:3
-        </button>
-        <button className="bg-[#ffffff1a] px-4 py-2 rounded-full text-sm">
-          2v
-        </button>
-        <button className="bg-[#ffffff1a] px-4 py-2 rounded-full text-sm">
-          <FaTrashAlt />
-        </button>
-        <button className="bg-[#ffffff1a] px-4 py-2 rounded-full text-sm">
-          <FaQuestion />
-        </button>
-
+        {/* כפתורים לפי הצורך */}
         <button
           className="ml-auto bg-[#ffffff1a] px-4 py-2 rounded-full text-sm"
-          onClick={handleSearch}
-          disabled={inputValue.trim() === ""}
+          onClick={() => {
+            /* אפשר גם לחייב חיפוש ידני, אם רוצים */
+          }}
+          disabled={!inputValue.trim()}
         >
           <FaArrowUp />
         </button>
@@ -67,5 +61,3 @@ function SearchBar() {
     </div>
   );
 }
-
-export default SearchBar;

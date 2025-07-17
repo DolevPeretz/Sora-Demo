@@ -1,33 +1,30 @@
 "use client";
-import { useQueryContext } from "@/context/QueryContext";
 import { useGenerateImage } from "@/hooks/useGenerateImage";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import ButtonSize from "./ButtonSize";
 import ImageGrid from "./ImageGrid";
+import { ImageData } from "@/utils/preloadImages";
 
-function ListCard() {
+type Props = {
+  prompt: string;
+  initialImages: ImageData[];
+};
+
+function ListCard({ prompt, initialImages }: Props) {
+  const [localPrompt, setLocalPrompt] = useState(prompt);
   const [aspect, setAspect] = useState<
     "aspect-square" | "aspect-video" | "aspect-[9/16]"
   >("aspect-square");
 
-  const { query } = useQueryContext();
-  const prompt = query;
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useGenerateImage(prompt);
 
-  const { ref, inView } = useInView({ threshold: 0.1 });
+  useEffect(() => {
+    setLocalPrompt(prompt);
+  }, [prompt]);
 
-  // useEffect(() => {
-  //   if (data && data.pages.length > 0) {
-  //     const firstPageImages = data.pages[0]; // קבלת התמונה הראשונה מהדף הראשון
-  //     if (firstPageImages && firstPageImages.length > 0) {
-  //       const img = new Image();
-  //       img.src = firstPageImages[0]?.url; // נטען את התמונה הראשונה מראש
-  //     }
-  //   }
-  // }, [data]);
+  const { ref, inView } = useInView({ threshold: 0.1 });
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage && status === "success") {
