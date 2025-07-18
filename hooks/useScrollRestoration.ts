@@ -1,26 +1,31 @@
 "use client";
 import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
 
-export function useScrollRestoration() {
-  //   const pathname = usePathname();
-  //   const searchParams = useSearchParams();
-  //   useEffect(() => {
-  //     const key = `scroll-pos:${pathname}?${searchParams.toString()}`;
-  //     const saveScroll = () => {
-  //       sessionStorage.setItem(key, window.scrollY.toString());
-  //     };
-  //     window.addEventListener("beforeunload", saveScroll);
-  //     return () => {
-  //       saveScroll();
-  //       window.removeEventListener("beforeunload", saveScroll);
-  //     };
-  //   }, [pathname, searchParams]);
-  //   useEffect(() => {
-  //     const key = `scroll-pos:${pathname}?${searchParams.toString()}`;
-  //     const savedY = sessionStorage.getItem(key);
-  //     if (savedY) {
-  //       window.scrollTo(0, parseInt(savedY, 10));
-  //     }
-  //   }, [pathname, searchParams]);
+export function useScrollToSavedImage(isReady: boolean) {
+  useEffect(() => {
+    if (!isReady) return;
+
+    const savedIndex = sessionStorage.getItem("scrollIndex");
+    const savedY = sessionStorage.getItem("scrollY");
+
+    const scroll = () => {
+      if (savedIndex) {
+        const target = document.getElementById(`img-${savedIndex}`);
+        if (target) {
+          target.scrollIntoView({ behavior: "instant", block: "start" });
+          sessionStorage.removeItem("scrollIndex");
+          sessionStorage.removeItem("scrollY");
+          return;
+        }
+      }
+
+      if (savedY) {
+        window.scrollTo({ top: parseInt(savedY), behavior: "smooth" });
+        sessionStorage.removeItem("scrollY");
+      }
+    };
+
+    const timeout = setTimeout(scroll, 100);
+    return () => clearTimeout(timeout);
+  }, [isReady]);
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
-import ClientSideScrollRestorer from "@/src/ClientSideScrollRestorer";
 import NavBar from "@/components/NavBar";
 import { Suspense } from "react";
 export const metadata: Metadata = {
@@ -18,10 +17,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <NavBar />
           <Suspense>{children}</Suspense>
-
-          {/* <ClientSideScrollRestorer /> */}
+          <NavBar />
         </Providers>
       </body>
     </html>

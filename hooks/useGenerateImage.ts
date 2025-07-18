@@ -1,10 +1,7 @@
 "use client";
-import { ImageData } from "@/utils/preloadImages";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export function useGenerateImage(prompt: string) {
-  console.log("Fetching for prompt:", prompt);
-
   return useInfiniteQuery({
     queryKey: ["images", prompt],
     queryFn: async ({ pageParam = 1 }) => {

@@ -1,13 +1,13 @@
 "use client";
-type AspectRatio = "aspect-square" | "aspect-video" | "aspect-[9/16]";
 
-function ButtonSize({
-  aspect,
-  onChange,
-}: {
+export type AspectRatio = "aspect-square" | "aspect-video" | "aspect-[9/16]";
+
+type ButtonSizeProps = {
   aspect: AspectRatio;
   onChange: (value: AspectRatio) => void;
-}) {
+};
+
+function ButtonSize({ aspect, onChange }: ButtonSizeProps) {
   return (
     <div className="flex gap-4 justify-center my-6">
       <button

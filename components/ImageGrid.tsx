@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import { ImageData } from "@/utils/preloadImages";
+import { ImageData } from "@/utils/type";
 
 type Props = {
   images: ImageData[];
