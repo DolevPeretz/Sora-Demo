@@ -9,7 +9,7 @@ type QueryContextType = {
 const QueryContext = createContext<QueryContextType | null>(null);
 
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
-  const [query, setQuery] = useState("Ganric Image");
+  const [query, setQuery] = useState("City and pepole");
 
   return (
     <QueryContext.Provider value={{ query, setQuery }}>

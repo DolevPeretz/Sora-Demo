@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import ButtonSize from "./ButtonSize";
 import ImageGrid from "./ImageGrid";
-import { ImageData } from "@/utils/preloadImages";
-import { preloadImagesAsync } from "@/utils/preloadImages";
+import { ImageData, preloadImagesAsync } from "@/utils/preloadImages";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 type Props = {
@@ -13,16 +12,10 @@ type Props = {
   initialImages: ImageData[];
 };
 
-function preloadImages(urls: string[]) {
-  urls.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-
 function ListCard({ prompt, initialImages }: Props) {
   useScrollRestoration();
   const [loadingImages, setLoadingImages] = useState(true);
+  const [imagesp, setImages] = useState(initialImages || []);
 
   const [aspect, setAspect] = useState<
     "aspect-square" | "aspect-video" | "aspect-[9/16]"
@@ -31,12 +24,20 @@ function ListCard({ prompt, initialImages }: Props) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useGenerateImage(prompt);
 
-  // useEffect(() => {
-  //   const urls = initialImages.map((i) => i.url);
-  //   preloadImagesAsync(urls)
-  //     .then(() => setLoadingImages(false))
-  //     .catch(() => setLoadingImages(false));
-  // }, [initialImages]);
+  useEffect(() => {
+    const nextBatch = data?.pages[data.pages.length - 1] || [];
+    const urls = nextBatch.map((img: ImageData) => img.url);
+
+    if (urls.length > 0) {
+      preloadImagesAsync(urls).then((validUrls) => {
+        const validImages = nextBatch.filter((img: ImageData) =>
+          validUrls.includes(img.url)
+        );
+
+        setImages((prev) => [...prev, ...validImages]);
+      });
+    }
+  }, [data]);
 
   const { ref, inView } = useInView({ threshold: 0.1 });
 

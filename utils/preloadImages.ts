@@ -35,15 +35,28 @@ export type ImageData = {
 //   });
 // };
 
-export function preloadImagesAsync(urls: string[]): Promise<void[]> {
-  const promises = urls.map(
-    (src) =>
-      new Promise<void>((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve();
-        img.onerror = reject;
-        img.src = src;
-      })
-  );
-  return Promise.all(promises);
+// export function preloadImagesAsync(urls: string[]): Promise<void[]> {
+//   const promises = urls.map(
+//     (src) =>
+//       new Promise<void>((resolve, reject) => {
+//         const img = new Image();
+//         img.onload = () => resolve();
+//         img.onerror = reject;
+//         img.src = src;
+//       })
+//   );
+//   return Promise.all(promises);
+// }
+
+export async function preloadImagesAsync(urls: string[]): Promise<string[]> {
+  const preload = (url: string) =>
+    new Promise<string | null>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(url);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+  const results = await Promise.all(urls.map(preload));
+  return results.filter((url): url is string => url !== null);
 }
