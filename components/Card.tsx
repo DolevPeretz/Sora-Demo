@@ -13,7 +13,6 @@ type CardProps = {
 const CardComponent = ({ img, aspect, index }: CardProps) => {
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
 
   const isVideo = img.content_type?.startsWith("video");
 
@@ -23,7 +22,6 @@ const CardComponent = ({ img, aspect, index }: CardProps) => {
   }, []);
 
   const handleClick = () => {
-    setIsNavigating(true);
     sessionStorage.setItem("scrollIndex", String(index));
     sessionStorage.setItem("scrollY", String(window.scrollY));
     sessionStorage.setItem("selectedImage", JSON.stringify(img));
@@ -37,12 +35,6 @@ const CardComponent = ({ img, aspect, index }: CardProps) => {
       id={`img-${index}`}
       onClick={handleClick}
     >
-      {isNavigating && (
-        <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-20">
-          <div className="h-6 w-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      )}
-
       {isVideo ? (
         <video
           src={img.url}
