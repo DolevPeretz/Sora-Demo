@@ -12,7 +12,7 @@ export function useScrollToSavedImage(isReady: boolean) {
       if (savedIndex) {
         const target = document.getElementById(`img-${savedIndex}`);
         if (target) {
-          target.scrollIntoView({ behavior: "instant", block: "start" });
+          target.scrollIntoView({ behavior: "instant", block: "center" });
           sessionStorage.removeItem("scrollIndex");
           sessionStorage.removeItem("scrollY");
           return;

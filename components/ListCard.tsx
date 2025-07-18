@@ -16,7 +16,7 @@ function ListCard({ prompt }: { prompt: string }) {
   const { displayedImages, isLoading } = usePreloadImages(data?.pages);
   useScrollToSavedImage(!isLoading);
 
-  const { ref, inView } = useInView({ threshold: 0.5 });
+  const { ref, inView } = useInView({ threshold: 0.1 });
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage && status === "success") {

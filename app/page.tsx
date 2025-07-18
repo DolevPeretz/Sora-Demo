@@ -8,7 +8,6 @@ export default async function HomePage({
   searchParams: Promise<{ prompt?: string }>;
 }) {
   const { prompt = "default" } = await searchParams;
-  await fetchInitialImages(prompt);
 
   return (
     <>

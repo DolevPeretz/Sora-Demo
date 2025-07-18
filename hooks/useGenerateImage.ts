@@ -23,6 +23,6 @@ export function useGenerateImage(prompt: string) {
     },
     initialPageParam: 1,
     getNextPageParam: (_lastPage, _pages, lastPageIndex) => lastPageIndex + 1,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 5,
   });
 }
