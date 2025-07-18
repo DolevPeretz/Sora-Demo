@@ -1,23 +1,22 @@
-General Overview
-The application displays images or videos retrieved from an external API based on a search term (prompt) and supports infinite scroll functionality.
+✨ Main Features
+🔁 Infinite Scroll – Automatically loads more images as the user scrolls down.
 
-Key Features
-Uses React Query to manage API calls with caching and pagination support.
+🔍 Search by Prompt – Updates the displayed images based on the entered prompt.
 
-Preloads images in batches to enhance user experience.
+📐 Dynamic Aspect Ratio Support – Supports square, portrait, and landscape formats.
 
-Restores scroll position when navigating back from an individual image page.
+⚡ Batch Preloading – All images from the same request are loaded together with no delay between them.
 
-Supports different image aspect ratios (square, vertical, horizontal).
+💾 Scroll Position Restoration – Returns the user to the exact image they viewed after navigating back from the detail page.
 
-Smooth transition between old and new results when the search term changes.
+📦 Caching with React Query – Prevents redundant API calls and improves performance.
 
-Automatically loads more images when the user scrolls to the bottom of the page.
+🧱 Core Technologies
+Next.js 14 (App Router)
 
-Core Technologies
 React (Client Components)
 
-Next.js 14 (App Router)
+TypeScript
 
 React Query (useInfiniteQuery)
 
@@ -25,15 +24,38 @@ Tailwind CSS
 
 Intersection Observer (useInView)
 
-Session Storage for scroll position restoration
+Session Storage – Used for preserving scroll position
 
-Architecture
-ListCard – Main component that renders the image gallery.
+🧠 Architecture
+ListCard
+The main component responsible for:
 
-useGenerateImage – Custom hook that handles API requests based on the prompt.
+Fetching images from the API
 
-usePreloadImages – Hook that handles preloading of image batches.
+Handling infinite scroll
 
-useScrollToSavedImage – Hook that restores the user's previous scroll position.
+Updating results when the prompt changes
 
-Card and ImageGrid – Components for displaying images with adjustable aspect ratios.
+Managing aspect ratio via context
+
+useGenerateImage
+A custom hook using useInfiniteQuery to:
+
+Fetch images from the API
+
+Handle pagination
+
+Automatically refresh data when the prompt changes
+
+usePreloadImages
+Preloads image batches in the background
+
+Ensures smooth and complete rendering of each batch
+
+useScrollToSavedImage
+Restores the user’s last scroll position using sessionStorage
+
+ImageGrid & Card
+UI components for displaying images/videos according to the selected aspect ratio
+
+Each image can be opened in a full-screen detail view
